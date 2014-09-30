@@ -14,9 +14,7 @@ type SearchTerms struct {
 	Uid 	    string
 }
 
-type Users struct {
-	Username  string
-	Password  string
+type Profile struct {
 	Userid int64
 	Email string
 	Time int64
@@ -74,7 +72,7 @@ func sendJson (w *http.ResponseWriter, r *http.Request, message string, uid stri
     return
 }
 
-func sendResult (w *http.ResponseWriter, r *http.Request, result []Users){
+func sendResult (w *http.ResponseWriter, r *http.Request, result []Profile){
 	
 	for i := range result {
         result[i].Password = "Censored"
@@ -141,12 +139,12 @@ func search (w http.ResponseWriter, r *http.Request){
 	}
 	
 
-	qClient := datastore.NewQuery("User").
+	qClient := datastore.NewQuery("Profile").
                 Filter("Username >=", inputsubstring.Searchterm).
                 Filter("Username <=", inputsubstring.Searchterm+"\ufffd").Order("Username").
                 Limit(5)
                 
-     var client []Users
+     var client []Profile
      if _, err := qClient.GetAll(c, &client); client==nil{ 
      	sendJson (&w, r,"No User Found", "-1", "0")
      	return
